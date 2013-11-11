@@ -58,9 +58,9 @@ void Graphics::initGlfw(bool fullscreen) {
   if (!glfwInit())
     throw std::runtime_error("Failed to initialize GLFW.");
 
-  //use opengl 3.3
+  //use opengl 3.1
   glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-  glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
+  glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 1);
   //user can't resize window
   glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
   glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4); // 4x antialiasing
