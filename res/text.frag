@@ -1,4 +1,4 @@
-#version 150 core
+#version 140
 in vec2 tcoord;
 
 uniform sampler2D tex;
