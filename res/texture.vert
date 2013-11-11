@@ -1,4 +1,4 @@
-#version 330 core
+#version 150 core
 in vec3 vertexPosition;
 in vec2 vertexUV;
 in vec2 tilePosition;
