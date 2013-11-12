@@ -1,5 +1,6 @@
 #include <FreeImage.h>
 #include <vector>
+#include <stdexcept>
 
 #include "texture.hpp"
 
