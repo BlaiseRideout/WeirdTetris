@@ -363,6 +363,23 @@ void Game::passGridBuffer() {
     }
 
   for(int y = 0; y < 4; ++y) {
+    bool clear = true;
+
+    for(int x = 0; x < gridWidth && clear; ++x) {
+      clear = clear && (this->grid[(ghostposy + y) * gridWidth + x] != 0 || (x >= posx && x < posx + 4 && p[y * 4 + (x - posx)] != 0));
+    }
+
+    if(clear) {
+      for(int x = 0; x < gridWidth; ++x) {
+        glm::vec3 &color = gridColors[(ghostposy + y) * gridWidth + x];
+        color.r *= .6;
+        color.g *= .6;
+        color.b *= .6;
+      }
+    }
+  }
+
+  for(int y = 0; y < 4; ++y) {
       for(int x = 0; x < 4; ++x) {
         if(posy + y >= 0 && p[y * 4 + x] != 0 && this->grid[(posy + y) * gridWidth + posx + x] <= 1)
           gridColors[(posy + y) * gridWidth + (posx + x)] = pieceColors[p[y * 4 + x]];
