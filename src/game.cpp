@@ -7,7 +7,7 @@
 #include <sstream>
 
 
-Game::Game() : grid(gridWidth * gridHeight), ticks(defTicks), tick(ticks), score(0), losses(0) {
+Game::Game() : grid(gridWidth * gridHeight), ticks(defTicks), tick(ticks), score(0), losses(0), window(800, 600, false, "Weird Tetris") {
   this->running = true;
 }
 
@@ -247,7 +247,7 @@ void Game::newGame() {
 }
 
 void Game::draw() {
-  Graphics::clearScreen();
+  w.clearScreen();
 
   this->p.use();
   this->vao.bind();
@@ -259,7 +259,7 @@ void Game::draw() {
 }
 
 void Game::init() {
-  Graphics::init(800, 600, false);
+  w.clearColor(glm::vec3(0.2f, 0.2f, 0.2f));
   FragmentShader f("res/texture.frag");
   VertexShader v("res/texture.vert");
   FragmentShader ffrag("res/text.frag");

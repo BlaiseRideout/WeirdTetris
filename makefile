@@ -6,11 +6,11 @@ OBJ = obj
 CC = g++
 PREFIX = /usr/local
 RES = /usr/share/weirdtetris
-LDFLAGS = -lglfw -lGL -lGLEW -lGLU -lfreeimage
+LDFLAGS = -lglfw3 -lGL -lGLEW -lGLU -lfreeimage
 CFLAGS = --std=c++11 -Wall -O2
 INC = -Iinc
 
-_OBJS = main.o game.o graphics.o shader.o vertex.o buffer.o vao.o texture.o mino.o text.o
+_OBJS = main.o game.o graphics.o shader.o vertex.o buffer.o vao.o texture.o mino.o text.o window.o
 OBJS = $(patsubst %,$(OBJ)/%,$(_OBJS))
 
 $(OBJ)/%.o: $(SRC)/%.cpp

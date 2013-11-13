@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include "shader.hpp"
-#include "graphics.hpp"
+#include "window.hpp"
 #include "texture.hpp"
 #include "mino.hpp"
 #include "text.hpp"
@@ -23,6 +23,8 @@ class Game {
         void newGame();
         void choosePiece();
         void passGridBuffer();
+
+        Window window;
 
         bool running;
         Texture t;
