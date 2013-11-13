@@ -32,7 +32,6 @@ class Window {
   private:
     void initGL();
     void initGlfw();
-    void initBuffers();
 
     GLFWwindow *window;
     static GLFWwindow *currentWindow;

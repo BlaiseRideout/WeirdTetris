@@ -11,9 +11,8 @@
 extern const GLubyte *gluErrorString(GLenum error);
 
 
-
 Window::Window(int width, int height, bool fullscreen, std::string title, int majorVersion, int minorVersion) : width(width), height(height), fullscreen(fullscreen), title(title), majorVersion(majorVersion), minorVersion(minorVersion) {
-  initGlfw(fullscreen);
+  initGlfw();
   initGL();
 }
 
@@ -70,7 +69,6 @@ void Window::shouldClose(bool should) {
 }
 
 void Window::initGL() {
-  this->makeCurrent();
   glewExperimental = GL_TRUE;
   GLenum err = glewInit();
   if (GLEW_OK != err)
@@ -88,12 +86,12 @@ void Window::initGL() {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void Window::initGlfw(bool fullscreen) {
+void Window::initGlfw() {
   //initialize glfw
   if (!glfwInit())
     throw std::runtime_error("Failed to initialize GLFW.");
 
-  if(fullscreen)
+  if(this->fullscreen)
     this->window = glfwCreateWindow(this->width, this->height, title.c_str(), glfwGetPrimaryMonitor(), nullptr);
   else
     this->window = glfwCreateWindow(this->width, this->height, title.c_str(), nullptr, nullptr);
@@ -108,6 +106,8 @@ void Window::initGlfw(bool fullscreen) {
 
   //vsync: 0 = no, 1 = yes
   glfwSwapInterval(1);
+  
+  this->makeCurrent();
 
   std::cout << glGetString(GL_VERSION) << std::endl;
 }
