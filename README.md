@@ -7,9 +7,13 @@ Tetris with noncontiguous tetrominos
 Compile & run
 =============
 
-1. 	Install build-essential & others
+1. 	(Unix) Install build-essential & others
 	
 		apt-get install build-essential g++
+
+2. 	(Windows) Install Visual Studio Express
+
+		http://www.visualstudio.com/downloads
 
 2. 	(Unix) Install needed libraries:
 	
@@ -26,10 +30,18 @@ Compile & run
 
 		http://www.glfw.org/download.html
 	
-4.	Run make from top directory
+4.	(Unix) Run make from top directory
 	
 		cd /path/to/WeirdTetris/
 		make
+
+4. 	(Windows) Setup Visual Studio solution
+
+		Create new empty project
+		Right click project > Properties > Configuration Properties > Linker > Input > Additional Dependencies = "kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);glfw3.lib;opengl32.lib;glew32.lib;glu32.lib;FreeImage.lib"
+		Add NuGet package for GLM
+		Compile
+		Copy res directory into resulting Binary directory (Debug/Release)
 	
 5.	Run weird tetris
 	
