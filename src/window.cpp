@@ -8,8 +8,6 @@
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
 
-extern const GLubyte *gluErrorString(GLenum error);
-
 
 Window::Window(int width, int height, bool fullscreen, std::string title, int majorVersion, int minorVersion) : width(width), height(height), fullscreen(fullscreen), title(title), majorVersion(majorVersion), minorVersion(minorVersion) {
   initGlfw();
@@ -67,7 +65,7 @@ void Window::makeCurrent() {
 }
 
 bool Window::shouldClose() {
-  return glfwWindowShouldClose(this->window);
+  return glfwWindowShouldClose(this->window) == GL_TRUE;
 }
 
 void Window::shouldClose(bool should) {

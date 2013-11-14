@@ -5,10 +5,10 @@
 
 
 Mino::Mino() : rot(0) {
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	int seed = (int)std::chrono::system_clock::now().time_since_epoch().count();
 	
 	std::mt19937 r(seed);
-	type = abs(r() % (Mino::numPieces + 6) - 6);
+	type = abs(int(r() % (Mino::numPieces + 6) - 6));
 }
 
 Mino::Mino(int type) : type(type), rot(0) {

@@ -84,10 +84,10 @@ void Text::genBuffers() {
 	}
 
 	vertices = Buffer(verts);
-	vao.setAttrib(this->p, "vertexPosition", vertices, 3, GL_FLOAT);
+	vao.setAttrib(this->p, "vertexPosition", vertices, 3, GL_FLOAT, false);
 
 	uvs = Buffer(temp_uvs);
-	vao.setAttrib(this->p, "vertexUV", uvs, 2, GL_FLOAT);
+	vao.setAttrib(this->p, "vertexUV", uvs, 2, GL_FLOAT, false);
 }
 
 Text &Text::operator=(Text const &t) {
