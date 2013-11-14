@@ -3,24 +3,31 @@ WeirdTetris
 
 Tetris with noncontiguous tetrominos
 
-Compile & run:
 
-1. 	install build-essential & others
+Compile & run
+=============
+
+1. 	Install build-essential & others
 	
 		apt-get install build-essential g++
 
-1. 	install needed libraries:
+2. 	Install needed libraries:
 	
-		apt-get install libglm-dev libglew-dev libglfw-dev
-	
+		apt-get install libglm-dev libglew-dev libglu1-mesa-dev libxxf86vm-dev libx11-dev libxi-dev libxrandr-dev libfreeimage-dev
+
 	or similar, depending on system.
+
+3. 	Install glfw3
+
+		http://www.glfw.org/download.html
 	
-2.	run make from top directory
+4.	Run make from top directory
 	
+		cd /path/to/WeirdTetris/
 		make
 	
-3.	Run weird tetris
+5.	Run weird tetris
 	
 		./weirdtetris
 	
-	Arrow keys, space to drop, escape to close.
+	Left/Right to move, Up/Z to rotate, Shift to hold, Space to drop, Escape to close.
