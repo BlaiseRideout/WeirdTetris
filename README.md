@@ -11,13 +11,18 @@ Compile & run
 	
 		apt-get install build-essential g++
 
-2. 	Install needed libraries:
+2. 	(Unix) Install needed libraries:
 	
 		apt-get install libglm-dev libglew-dev libglu1-mesa-dev libxxf86vm-dev libx11-dev libxi-dev libxrandr-dev libfreeimage-dev
 
 	or similar, depending on system.
 
-3. 	Install glfw3
+2. 	(Windows) Install needed libraries:
+
+		http://glew.sourceforge.net/index.html
+		http://freeimage.sourceforge.net/download.html
+
+3. 	Install glfw
 
 		http://www.glfw.org/download.html
 	
