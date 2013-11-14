@@ -1,5 +1,4 @@
 #include "text.hpp"
-#include "graphics.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -14,11 +13,6 @@ Text::Text(ShaderProgram p, std::string str, float x, float y) : Text(p, str, x,
 }
 
 Text::Text(ShaderProgram p, std::string str, float x, float y, float size) : p(p), str(str), x(x), y(y), size(size) {
-	this->t = Texture("res/font.png", GL_NEAREST);
-	this->p["tex"] = this->t;
-	this->p["P"] = glm::ortho(0.0f, (float)Graphics::width, (float)Graphics::height, 0.0f, -0.1f, 100.0f);
-	this->p["V"] = glm::mat4(1.0f);
-	this->p["M"] = glm::mat4(1.0f);
 	genBuffers();
 }
 
@@ -28,7 +22,6 @@ void Text::setStr(std::string str) {
 }
 
 void Text::draw() {
-	this->p.use();
 	this->vao.bind();
 	this->vertices.drawArrays();
 }

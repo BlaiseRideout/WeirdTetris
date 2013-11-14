@@ -1,7 +1,7 @@
 #include "window.hpp"
 
 #include <GL/glew.h>
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <iostream>
 #include <stdexcept>
@@ -32,7 +32,13 @@ Window::Window() : Window(false) {
 }
 
 Window::~Window() {
+  if(Window::currentWindow == window)
+    Window::currentWindow = nullptr;
   glfwDestroyWindow(window);
+}
+
+Window::operator GLFWwindow*() {
+  return this->window;
 }
 
 void Window::clearColor(glm::vec4 color) {
@@ -68,6 +74,10 @@ void Window::shouldClose(bool should) {
   glfwSetWindowShouldClose(this->window, should?GL_TRUE:GL_FALSE);
 }
 
+int Window::getKey(int key) {
+  return glfwGetKey(this->window, key);
+}
+
 void Window::initGL() {
   glewExperimental = GL_TRUE;
   GLenum err = glewInit();
@@ -99,10 +109,10 @@ void Window::initGlfw() {
   if(!this->window)
     throw std::runtime_error("Failed to open GLFW window.");
 
-  glfwWindowHint(GLFW_OPENGL_VERSION_MAJOR, this->majorVersion);
-  glfwWindowHint(GLFW_OPENGL_VERSION_MINOR, this->minorVersion);
-  glfwWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
-  glfwWindowHint(GLFW_FSAA_SAMPLES, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, this->majorVersion);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, this->minorVersion);
+  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  glfwWindowHint(GLFW_SAMPLES, 4);
 
   //vsync: 0 = no, 1 = yes
   glfwSwapInterval(1);

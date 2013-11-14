@@ -28,6 +28,7 @@ class Game {
 
         bool running;
         Texture t;
+        Texture font;
         ShaderProgram p;
         ShaderProgram text;
         Text scoreText;

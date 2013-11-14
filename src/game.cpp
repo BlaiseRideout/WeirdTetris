@@ -1,21 +1,21 @@
 #include "game.hpp"
 
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 #include <time.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <sstream>
 
 
-Game::Game() : grid(gridWidth * gridHeight), ticks(defTicks), tick(ticks), score(0), losses(0), window(800, 600, false, "Weird Tetris") {
+Game::Game() : window(800, 600, false, "Weird Tetris"), grid(gridWidth * gridHeight), ticks(defTicks), tick(ticks), score(0), losses(0) {
   this->running = true;
 }
 
 void Game::update() {
-  running = running && glfwGetKey(GLFW_KEY_ESC) == GLFW_RELEASE;
+  running = running && this->window.getKey(GLFW_KEY_ESCAPE) == GLFW_RELEASE;
 
   tick--;
-  if(tick == 0 || (glfwGetKey(GLFW_KEY_DOWN) != GLFW_RELEASE && !prevDown)) {
+  if(tick == 0 || (this->window.getKey(GLFW_KEY_DOWN) != GLFW_RELEASE && !prevDown)) {
     tick = ticks;
     
     bool canmove = true;
@@ -40,13 +40,13 @@ void Game::update() {
             if(p[y * 4 + x] != 0 && posy + y < 0) {
               losses++;
               newGame();
-              prevLeft = glfwGetKey(GLFW_KEY_LEFT) != GLFW_RELEASE;
-              prevRight = glfwGetKey(GLFW_KEY_RIGHT) != GLFW_RELEASE;
-              prevUp = glfwGetKey(GLFW_KEY_UP) != GLFW_RELEASE;
-              prevZ = glfwGetKey(';') != GLFW_RELEASE;
-              prevDown = glfwGetKey(GLFW_KEY_DOWN) != GLFW_RELEASE;
-              prevSpace = glfwGetKey(GLFW_KEY_SPACE) != GLFW_RELEASE;
-              prevShift = glfwGetKey('Q') != GLFW_RELEASE;
+              prevLeft = this->window.getKey(GLFW_KEY_LEFT) != GLFW_RELEASE;
+              prevRight = this->window.getKey(GLFW_KEY_RIGHT) != GLFW_RELEASE;
+              prevUp = this->window.getKey(GLFW_KEY_UP) != GLFW_RELEASE;
+              prevZ = this->window.getKey(GLFW_KEY_SEMICOLON) != GLFW_RELEASE;
+              prevDown = this->window.getKey(GLFW_KEY_DOWN) != GLFW_RELEASE;
+              prevSpace = this->window.getKey(GLFW_KEY_SPACE) != GLFW_RELEASE;
+              prevShift = this->window.getKey(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE;
               return;
             }
             if(p[y * 4 + x] != 0)
@@ -74,7 +74,7 @@ void Game::update() {
       moved = false;
     }
   }
-  if(glfwGetKey(GLFW_KEY_SPACE) != GLFW_RELEASE && !prevSpace) {
+  if(this->window.getKey(GLFW_KEY_SPACE) != GLFW_RELEASE && !prevSpace) {
     bool canmove = true;
 
     const int *p = this->piece.getArray();
@@ -96,13 +96,13 @@ void Game::update() {
         if(p[y * 4 + x] != 0 && posy + y < 0) {
           losses++;
           newGame();
-          prevLeft = glfwGetKey(GLFW_KEY_LEFT) != GLFW_RELEASE;
-          prevRight = glfwGetKey(GLFW_KEY_RIGHT) != GLFW_RELEASE;
-          prevUp = glfwGetKey(GLFW_KEY_UP) != GLFW_RELEASE;
-          prevZ = glfwGetKey(';') != GLFW_RELEASE;
-          prevDown = glfwGetKey(GLFW_KEY_DOWN) != GLFW_RELEASE;
-          prevSpace = glfwGetKey(GLFW_KEY_SPACE) != GLFW_RELEASE;
-          prevShift = glfwGetKey('Q') != GLFW_RELEASE;
+          prevLeft = this->window.getKey(GLFW_KEY_LEFT) != GLFW_RELEASE;
+          prevRight = this->window.getKey(GLFW_KEY_RIGHT) != GLFW_RELEASE;
+          prevUp = this->window.getKey(GLFW_KEY_UP) != GLFW_RELEASE;
+          prevZ = this->window.getKey(GLFW_KEY_SEMICOLON) != GLFW_RELEASE;
+          prevDown = this->window.getKey(GLFW_KEY_DOWN) != GLFW_RELEASE;
+          prevSpace = this->window.getKey(GLFW_KEY_SPACE) != GLFW_RELEASE;
+          prevShift = this->window.getKey(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE;
           return;
         }
         if(p[y * 4 + x] != 0)
@@ -129,7 +129,7 @@ void Game::update() {
     choosePiece();
   }
 
-  if(glfwGetKey(GLFW_KEY_LEFT) != GLFW_RELEASE && !prevLeft) {
+  if(this->window.getKey(GLFW_KEY_LEFT) != GLFW_RELEASE && !prevLeft) {
     bool canmove = true;
 
     const int *p = this->piece.getArray();
@@ -149,7 +149,7 @@ void Game::update() {
     else
       posx++;
   }
-  else if(glfwGetKey(GLFW_KEY_RIGHT) != GLFW_RELEASE && !prevRight) {
+  else if(this->window.getKey(GLFW_KEY_RIGHT) != GLFW_RELEASE && !prevRight) {
     bool canmove = true;
 
     const int *p = this->piece.getArray();
@@ -169,7 +169,7 @@ void Game::update() {
     else
       posx--;
   }
-  else if(glfwGetKey(GLFW_KEY_UP) != GLFW_RELEASE && !prevUp) {
+  else if(this->window.getKey(GLFW_KEY_UP) != GLFW_RELEASE && !prevUp) {
     Mino newMino(this->piece);
 
     newMino.rotClock();
@@ -191,7 +191,7 @@ void Game::update() {
       passGridBuffer();
     }
   }
-  else if(glfwGetKey(';') != GLFW_RELEASE && !prevZ) {
+  else if(this->window.getKey(GLFW_KEY_SEMICOLON) != GLFW_RELEASE && !prevZ) {
     Mino newMino(this->piece);
 
     newMino.rotCounterClock();
@@ -214,7 +214,7 @@ void Game::update() {
     }
   }
   
-  if(glfwGetKey('Q') != GLFW_RELEASE && !prevShift && !held) {
+  if(this->window.getKey(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE && !prevShift && !held) {
     held = true;
 
     Mino newMino(this->piece);
@@ -227,13 +227,13 @@ void Game::update() {
     passGridBuffer();
   }
 
-  prevLeft = glfwGetKey(GLFW_KEY_LEFT) != GLFW_RELEASE;
-  prevRight = glfwGetKey(GLFW_KEY_RIGHT) != GLFW_RELEASE;
-  prevUp = glfwGetKey(GLFW_KEY_UP) != GLFW_RELEASE;
-  prevZ = glfwGetKey(';') != GLFW_RELEASE;
-  prevDown = glfwGetKey(GLFW_KEY_DOWN) != GLFW_RELEASE;
-  prevSpace = glfwGetKey(GLFW_KEY_SPACE) != GLFW_RELEASE;
-  prevShift = glfwGetKey('Q') != GLFW_RELEASE;
+  prevLeft = this->window.getKey(GLFW_KEY_LEFT) != GLFW_RELEASE;
+  prevRight = this->window.getKey(GLFW_KEY_RIGHT) != GLFW_RELEASE;
+  prevUp = this->window.getKey(GLFW_KEY_UP) != GLFW_RELEASE;
+  prevZ = this->window.getKey(GLFW_KEY_SEMICOLON) != GLFW_RELEASE;
+  prevDown = this->window.getKey(GLFW_KEY_DOWN) != GLFW_RELEASE;
+  prevSpace = this->window.getKey(GLFW_KEY_SPACE) != GLFW_RELEASE;
+  prevShift = this->window.getKey(GLFW_KEY_LEFT_SHIFT) != GLFW_RELEASE;
 }
 
 void Game::newGame() {
@@ -247,19 +247,22 @@ void Game::newGame() {
 }
 
 void Game::draw() {
-  w.clearScreen();
+  this->window.clearScreen();
 
   this->p.use();
   this->vao.bind();
   this->inds.drawInstanced(gridWidth * gridHeight + 16 * 2);
   this->vao.unbind();
 
+
+  this->text.use();
   scoreText.draw();
   lossesText.draw();
 }
 
 void Game::init() {
-  w.clearColor(glm::vec3(0.2f, 0.2f, 0.2f));
+  this->window.clearColor(glm::vec3(0.2f, 0.2f, 0.2f));
+
   FragmentShader f("res/texture.frag");
   VertexShader v("res/texture.vert");
   FragmentShader ffrag("res/text.frag");
@@ -267,14 +270,19 @@ void Game::init() {
 
   this->p = ShaderProgram(f, v);
   this->text = ShaderProgram(ffrag, fvert);
-  
-  this->p["P"] = glm::ortho(0.0f, (float)Graphics::width, (float)Graphics::height, 0.0f, -0.1f, 100.0f);
-  this->p["V"] = glm::mat4(1.0f);
-  this->p["M"] = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(Graphics::width / 2 - (gridWidth * 25) / 2, Graphics::height / 2 - (gridHeight * 25) / 2, 0.0f)), glm::vec3(25.0f, 25.0f, 0.0f));
 
   this->t = Texture("res/tile.png");
+  this->p["tex"] = this->t;
+  this->p["P"] = glm::ortho(0.0f, (float)this->window.width, (float)this->window.height, 0.0f, -0.1f, 100.0f);
+  this->p["V"] = glm::mat4(1.0f);
+  this->p["M"] = glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(this->window.width / 2 - (gridWidth * 25) / 2, this->window.height / 2 - (gridHeight * 25) / 2, 0.0f)), glm::vec3(25.0f, 25.0f, 0.0f));
 
-  this->p["tex"] = t;
+
+  this->font = Texture("res/font.png", GL_NEAREST);
+  this->text["tex"] = this->font;
+  this->text["P"] = glm::ortho(0.0f, (float)this->window.width, (float)this->window.height, 0.0f, -0.1f, 100.0f);
+  this->text["V"] = glm::mat4(1.0f);
+  this->text["M"] = glm::mat4(1.0f);
 
   std::vector<glm::vec3> verts;
   verts.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -409,14 +417,15 @@ void Game::passGridBuffer() {
   std::stringstream lossesStream;
   lossesStream << "Losses - ";
   lossesStream << this->losses;
-  lossesText = Text(text, lossesStream.str(), Graphics::width - lossesStream.str().length() * 20 - 3, 3, 20.0f);
+  lossesText = Text(text, lossesStream.str(), this->window.width - lossesStream.str().length() * 20 - 3, 3, 20.0f);
 }
 
 void Game::run() {
-  while(this->running && glfwGetWindowParam(GLFW_OPENED)) {
+  while(this->running && !this->window.shouldClose()) {
     update();
     draw();
-    glfwSwapBuffers();
+    this->window.swapBuffers();
+    glfwPollEvents();
   }
 }
 

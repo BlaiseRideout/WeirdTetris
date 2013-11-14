@@ -2,9 +2,9 @@
 #define GRAPHICS_H
 
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <string>
-#include <glm/glm.hpp>
 
 class Window {
   public:
@@ -15,6 +15,7 @@ class Window {
     Window(int width, int height);
     Window();
     virtual ~Window();
+    operator GLFWwindow*();
     void clearColor(glm::vec3 color);
     void clearColor(glm::vec4 color);
     void clearScreen();
@@ -22,6 +23,7 @@ class Window {
     void makeCurrent();
     bool shouldClose();
     void shouldClose(bool should);
+    int getKey(int key);
 
     int width;
     int height;
