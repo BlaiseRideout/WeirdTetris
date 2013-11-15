@@ -53,6 +53,13 @@ dist: all
 	@bzip2 ${NAME}-${VERSION}.tar
 	@rm -rf ${NAME}-${VERSION}
 
+gzip: all
+	@mkdir -p ${NAME}-${VERSION}
+	@cp -Rv res ${NAME}-${VERSION}
+	@cp -v ${NAME} ${NAME}-${VERSION}
+	@tar cf ${NAME}-${VERSION}.tar ${NAME}-${VERSION}
+	@gzip ${NAME}-${VERSION}.tar
+	@rm -rf ${NAME}-${VERSION}
 
 uninstall:
 	@echo removing from ${DESTDIR}${PREFIX}/bin
