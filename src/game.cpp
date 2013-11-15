@@ -324,8 +324,7 @@ void Game::init() {
       poss.push_back(glm::vec2(gridWidth + 1 + (float)x, (float)y));
 
   positions = Buffer(poss);
-  vao.bind();
-  positions.setAttrib(this->p, "tilePosition", 2, GL_FLOAT, false, 1);
+  vao.setAttrib(this->p, "tilePosition", positions, 2, GL_FLOAT, false, 1);
   this->vao.unbind();
 
   newGame();
@@ -405,8 +404,7 @@ void Game::passGridBuffer() {
     gridColors[gridWidth * gridHeight + 16 + i] = pieceColors[n[i]];
 
   gridBuffer.loadData(gridColors, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
-  vao.bind();
-  gridBuffer.setAttrib(this->p, "tileColor", 3, GL_FLOAT, false, 1);
+  vao.setAttrib(this->p, "tileColor", gridBuffer, 3, GL_FLOAT, false, 1);
 
   std::stringstream scoreStream;
   scoreStream << "Score - ";
