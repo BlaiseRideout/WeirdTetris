@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <glm/glm.hpp>
 #include <sstream>
+#include <algorithm>
 
 
 Shader::Shader(Shader const &s) : id(s.id) {

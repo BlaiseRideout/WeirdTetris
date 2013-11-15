@@ -290,7 +290,7 @@ void Game::init() {
   verts.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
   verts.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
   vertices = Buffer(verts);
-  vao.setAttrib(this->p, "vertexPosition", vertices, 3, GL_FLOAT);
+  vao.setAttrib(this->p, "vertexPosition", vertices, 3, GL_FLOAT, false);
 
   std::vector<glm::vec2> temp_uvs;
   temp_uvs.push_back(glm::vec2(0, 1));
@@ -298,7 +298,7 @@ void Game::init() {
   temp_uvs.push_back(glm::vec2(1, 0));
   temp_uvs.push_back(glm::vec2(1, 1));
   uvs = Buffer(temp_uvs);
-  vao.setAttrib(this->p, "vertexUV", uvs, 2, GL_FLOAT);
+  vao.setAttrib(this->p, "vertexUV", uvs, 2, GL_FLOAT, false);
 
   std::vector<unsigned> indices;
   indices.push_back(0);
@@ -379,9 +379,9 @@ void Game::passGridBuffer() {
     if(clear) {
       for(int x = 0; x < gridWidth; ++x) {
         glm::vec3 &color = gridColors[(ghostposy + y) * gridWidth + x];
-        color.r *= .6;
-        color.g *= .6;
-        color.b *= .6;
+        color.r *= .6f;
+        color.g *= .6f;
+        color.b *= .6f;
       }
     }
   }
@@ -415,7 +415,7 @@ void Game::passGridBuffer() {
   std::stringstream lossesStream;
   lossesStream << "Losses - ";
   lossesStream << this->losses;
-  lossesText = Text(text, lossesStream.str(), this->window.width - lossesStream.str().length() * 20 - 3, 3, 20.0f);
+  lossesText = Text(text, lossesStream.str(), this->window.width - lossesStream.str().length() * 20.0f - 3.0f, 3.0f, 20.0f);
 }
 
 void Game::run() {
