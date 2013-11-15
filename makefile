@@ -1,11 +1,13 @@
 # weirdtetris
 
 NAME = weirdtetris
+VERSION = 0.1
 SRC = src
 OBJ = obj
+LRES=res
 CC = g++
 PREFIX = /usr/local
-RES = /usr/share/weirdtetris
+RES = /usr/local/share/
 LDFLAGS = -lXi -lXrandr -lXxf86vm -lX11 -lpthread -lglfw3 -lGL -lGLEW -lGLU -lfreeimage
 CFLAGS = --std=c++11 -Wall -O2
 INC = -Iinc
@@ -38,10 +40,19 @@ clean:
 install: all
 	@echo installing to ${DESTDIR}${PREFIX}/bin
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
-	@mkdir -p ${RES}
-	@cp -f ${NAME} ${DESTDIR}${PREFIX}/bin
-	@cp -v res/* ${RES}
+	@mkdir -p ${RES}/${NAME}
+	@cp -fv ${NAME} ${DESTDIR}${PREFIX}/bin
+	@cp -vR ${LRES}/* ${RES}/${NAME}
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/${NAME}
+
+dist: all
+	@mkdir -p ${NAME}-${VERSION}
+	@cp -Rv res ${NAME}-${VERSION}
+	@cp -v ${NAME} ${NAME}-${VERSION}
+	@tar cf ${NAME}-${VERSION}.tar ${NAME}-${VERSION}
+	@bzip2 ${NAME}-${VERSION}.tar
+	@rm -rf ${NAME}-${VERSION}
+
 
 uninstall:
 	@echo removing from ${DESTDIR}${PREFIX}/bin
