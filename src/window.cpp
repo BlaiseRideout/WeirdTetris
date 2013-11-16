@@ -99,6 +99,11 @@ void Window::initGlfw() {
   if (!glfwInit())
     throw std::runtime_error("Failed to initialize GLFW.");
 
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, this->majorVersion);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, this->minorVersion);
+  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  glfwWindowHint(GLFW_SAMPLES, 4);
+
   if(this->fullscreen)
     this->window = glfwCreateWindow(this->width, this->height, title.c_str(), glfwGetPrimaryMonitor(), nullptr);
   else
@@ -107,23 +112,8 @@ void Window::initGlfw() {
   if(!this->window)
     throw std::runtime_error("Failed to open GLFW window.");
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, this->majorVersion);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, this->minorVersion);
-  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-  glfwWindowHint(GLFW_SAMPLES, 4);
-
   //vsync: 0 = no, 1 = yes
   glfwSwapInterval(1);
-
-  #ifdef _WIN32
-    // Turn on vertical screen sync under Windows.
-    // (I.e. it uses the WGL_EXT_swap_control extension)
-    typedef BOOL (WINAPI *PFNWGLSWAPINTERVALEXTPROC)(int interval);
-    PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
-    wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-    if(wglSwapIntervalEXT)
-      wglSwapIntervalEXT(1);
-  #endif
   
   this->makeCurrent();
 

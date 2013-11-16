@@ -254,7 +254,6 @@ void Game::draw() {
   this->inds.drawInstanced(gridWidth * gridHeight + 16 * 2);
   this->vao.unbind();
 
-
   this->text.use();
   scoreText.draw();
   lossesText.draw();
