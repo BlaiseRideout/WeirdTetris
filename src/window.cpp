@@ -114,6 +114,16 @@ void Window::initGlfw() {
 
   //vsync: 0 = no, 1 = yes
   glfwSwapInterval(1);
+
+  #ifdef _WIN32
+    // Turn on vertical screen sync under Windows.
+    // (I.e. it uses the WGL_EXT_swap_control extension)
+    typedef BOOL (WINAPI *PFNWGLSWAPINTERVALEXTPROC)(int interval);
+    PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
+    wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+    if(wglSwapIntervalEXT)
+      wglSwapIntervalEXT(1);
+  #endif
   
   this->makeCurrent();
 
