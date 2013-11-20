@@ -1,15 +1,13 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "game.hpp"
+#include "tetris.hpp"
 
 
 int main(int argc, char **argv) {
   try {
-    Game game;
-    game.init();
+    Tetris game;
     game.run();
-    game.cleanup();
     return 0;
   }
   catch(const std::exception &exc) {

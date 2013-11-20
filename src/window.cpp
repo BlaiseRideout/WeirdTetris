@@ -11,10 +11,14 @@
 
 Window::Window(int width, int height, bool fullscreen, std::string title, int majorVersion, int minorVersion) : width(width), height(height), fullscreen(fullscreen), title(title), majorVersion(majorVersion), minorVersion(minorVersion) {
   initGlfw();
+  Window::refCount.insert(std::pair<GLFWwindow*, unsigned>(this->window, 1));
   initGL();
 }
 
 Window::Window(int width, int height, bool fullscreen, std::string title) : Window(width, height, fullscreen, title, 3, 1) {
+}
+
+Window::Window(int width, int height, bool fullscreen, int majorVersion, int minorVersion) : Window(width, height, fullscreen, "Divamia", majorVersion, minorVersion) {
 }
 
 Window::Window(int width, int height, bool fullscreen) : Window(width, height, fullscreen, "Divamia", 3, 1) {
@@ -26,16 +30,35 @@ Window::Window(bool fullscreen) : Window(800, 600, fullscreen) {
 Window::Window(int width, int height) : Window(width, height, false) {
 }
 
+Window::Window(Window const &w) : width(w.width), height(w.height), fullscreen(w.fullscreen), title(w.title), majorVersion(w.majorVersion), minorVersion(w.minorVersion), window(w.window) {
+  auto iterid = Window::refCount.find(this->window);
+  if(iterid != Window::refCount.end())
+      iterid->second = iterid->second + 1;
+}
+
+Window::Window(GLFWwindow *window) : window(window) {
+  glfwGetWindowSize(this->window, &this->width, &this->height);
+  fullscreen = glfwGetWindowMonitor(this->window) != nullptr;
+  // TODO: get title
+}
+
 Window::Window() : Window(false) {
 }
 
 Window::~Window() {
-  if(Window::currentWindow == window)
-    Window::currentWindow = nullptr;
-  glfwDestroyWindow(window);
+  auto iterid = Window::refCount.find(this->window);
+  if(iterid != Window::refCount.end()) {
+    iterid->second = iterid->second - 1;
+    if(iterid->second == 0) {
+      if(Window::currentWindow == window)
+        Window::currentWindow = nullptr;
+      glfwDestroyWindow(window);
+    }
+  }
+  
 }
 
-Window::operator GLFWwindow*() {
+Window::operator GLFWwindow*() const {
   return this->window;
 }
 
@@ -72,7 +95,7 @@ void Window::shouldClose(bool should) {
   glfwSetWindowShouldClose(this->window, should?GL_TRUE:GL_FALSE);
 }
 
-int Window::getKey(int key) {
+int Window::getKey(int key) const {
   return glfwGetKey(this->window, key);
 }
 
@@ -120,4 +143,5 @@ void Window::initGlfw() {
   std::cout << glGetString(GL_VERSION) << std::endl;
 }
 
+std::map<GLFWwindow*, unsigned> Window::refCount;
 GLFWwindow *Window::currentWindow = nullptr;

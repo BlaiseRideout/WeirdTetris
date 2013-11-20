@@ -12,7 +12,7 @@ LDFLAGS = -lXi -lXrandr -lXxf86vm -lX11 -lpthread -lglfw3 -lGL -lGLEW -lGLU -lfr
 CFLAGS = --std=c++11 -Wall -O2
 INC = -Iinc
 
-_OBJS = main.o game.o window.o shader.o vertex.o buffer.o vao.o texture.o mino.o text.o
+_OBJS = main.o game.o window.o shader.o vertex.o buffer.o vao.o texture.o mino.o text.o tetris.o
 OBJS = $(patsubst %,$(OBJ)/%,$(_OBJS))
 
 $(OBJ)/%.o: $(SRC)/%.cpp
