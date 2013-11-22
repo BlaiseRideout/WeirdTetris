@@ -1,22 +1,34 @@
 #include "buffer.hpp"
 
-Buffer::Buffer() {
+
+Buffer::Buffer() : Buffer(GL_ARRAY_BUFFER) {
 }
 
-Buffer::Buffer(Buffer const &v) : id(v.id), size(v.size), target(v.target) {
+Buffer::Buffer(GLenum target) : id(0), size(0), target(target) {
+
+}
+
+Buffer::Buffer(Buffer const &b) : id(b.id), size(b.size), target(b.target) {
     auto iterid = Buffer::refCount.find(this->id);
     if(iterid != Buffer::refCount.end())
         iterid->second = iterid->second + 1;
 }
 
-Buffer::Buffer(Buffer &&v) : id(v.id), size(v.size), target(v.target) {
-	auto iterid = Buffer::refCount.find(this->id);
-    if(iterid != Buffer::refCount.end())
-        iterid->second = iterid->second + 1;
+Buffer::~Buffer() {
+    auto iterid = Buffer::refCount.find(this->id);
+    if(iterid != Buffer::refCount.end()) {
+        iterid->second = iterid->second - 1;
+        if(iterid->second == 0)
+            this->del();
+    }
+}
+
+void Buffer::del() {
+    glDeleteBuffers(1, &this->id);
 }
 
 Buffer &Buffer::operator=(Buffer const &b) {
-	auto iterid = Buffer::refCount.find(this->id);
+    auto iterid = Buffer::refCount.find(this->id);
     if(iterid != Buffer::refCount.end()) {
         iterid->second = iterid->second - 1;
         if(iterid->second == 0)
@@ -24,7 +36,7 @@ Buffer &Buffer::operator=(Buffer const &b) {
     }
     this->id = b.id;
     this->size = b.size;
-    this->target = target;
+    this->target = b.target;
     iterid = Buffer::refCount.find(this->id);
     if(iterid != Buffer::refCount.end())
         iterid->second = iterid->second + 1;
@@ -32,18 +44,22 @@ Buffer &Buffer::operator=(Buffer const &b) {
 }
 
 Buffer &Buffer::operator=(Buffer &&b) {
-	std::swap(this->id, b.id);
-	std::swap(this->size, b.size);
-	std::swap(this->target, b.target);
+    std::swap(this->id, b.id);
+    std::swap(this->size, b.size);
+    std::swap(this->target, b.target);
     return *this;
 }
 
+Buffer::operator GLuint() {
+    return this->id;
+}
+
 void Buffer::bind(GLenum target) const {
-	glBindBuffer(target, this->id);
+    glBindBuffer(target, this->id);
 }
 
 void Buffer::bind() const {
-	bind(this->target);
+    bind(this->target);
 }
 
 void Buffer::unbind(GLenum target) const {
@@ -54,7 +70,7 @@ void Buffer::unbind() const {
     unbind(this->target);
 }
 
-void Buffer::setAttrib(GLuint attribute, int size, GLenum type, bool normalized, int divisor) const {
+void Buffer::setAttrib(GLuint attribute, int size, GLenum type, bool normalized, int divisor, GLsizei stride) const {
     glEnableVertexAttribArray(attribute);
     this->bind();
     glVertexAttribPointer(
@@ -62,87 +78,67 @@ void Buffer::setAttrib(GLuint attribute, int size, GLenum type, bool normalized,
         size,
         type,
         normalized?GL_TRUE:GL_FALSE,
-        0,                                // stride
+        stride,
         (void*)0                          // array buffer offset
     );
     glVertexAttribDivisor(attribute, divisor);
+}
+
+void Buffer::setAttrib(GLuint attribute, int size, GLenum type, bool normalized, int divisor) const {
+    setAttrib(attribute, size, type, normalized, divisor, 0);
 }
 
 void Buffer::setAttrib(GLuint attribute, int size, GLenum type, bool normalized) const {
     setAttrib(attribute, size, type, normalized, 0);
 }
 
-void Buffer::setAttrib(GLuint attribute, GLenum type, bool normalized) const {
-    setAttrib(attribute, 1, type, normalized);
-}
-
 void Buffer::setAttrib(GLuint attribute, int size, bool normalized) const {
     setAttrib(attribute, size, GL_FLOAT, normalized);
 }
 
-void Buffer::setAttrib(GLuint attribute, GLenum type) const {
-    setAttrib(attribute, 1, type, false);
+void Buffer::setAttrib(GLuint attribute, int size) const {
+    setAttrib(attribute, size, GL_FLOAT, false);
 }
 
-void Buffer::setAttrib(GLuint attribute) const {
-    setAttrib(attribute, 1, GL_FLOAT, false);
+void Buffer::setAttrib(ShaderProgram &s, std::string name, int size, GLenum type, bool normalized, int divisor, GLsizei stride) const {
+    setAttrib(s.getAttribLocation(name), size, type, normalized, divisor, stride);
 }
 
 void Buffer::setAttrib(ShaderProgram &s, std::string name, int size, GLenum type, bool normalized, int divisor) const {
-    setAttrib(s.getAttribLocation(name), size, type, normalized, divisor);
+    setAttrib(s, name, size, type, normalized, divisor, 0);
 }
 
 void Buffer::setAttrib(ShaderProgram &s, std::string name, int size, GLenum type, bool normalized) const {
-    setAttrib(s.getAttribLocation(name), size, type, normalized);
-}
-
-void Buffer::setAttrib(ShaderProgram &s, std::string name, GLenum type, bool normalized) const {
-    setAttrib(s, name, 1, type, normalized);
+    setAttrib(s, name, size, type, normalized);
 }
 
 void Buffer::setAttrib(ShaderProgram &s, std::string name, int size, bool normalized) const {
     setAttrib(s, name, size, GL_FLOAT, normalized);
 }
 
-void Buffer::setAttrib(ShaderProgram &s, std::string name, GLenum type) const {
-    setAttrib(s, name, 1, type, false);
-}
-
 void Buffer::setAttrib(ShaderProgram &s, std::string name, int size) const {
     setAttrib(s, name, size, GL_FLOAT, false);
 }
 
-void Buffer::setAttrib(ShaderProgram &s, std::string name) const {
-    setAttrib(s, name, 1, GL_FLOAT, false);
+
+void Buffer::setAttrib(ShaderProgram &&s, std::string name, int size, GLenum type, bool normalized, int divisor, GLsizei stride) const {
+    setAttrib(s.getAttribLocation(name), size, type, normalized, divisor, stride);
 }
 
-
 void Buffer::setAttrib(ShaderProgram &&s, std::string name, int size, GLenum type, bool normalized, int divisor) const {
-    setAttrib(s.getAttribLocation(name), size, type, normalized, divisor);
+    setAttrib(s, name, size, type, normalized, divisor, 0);
 }
 
 void Buffer::setAttrib(ShaderProgram &&s, std::string name, int size, GLenum type, bool normalized) const {
-    setAttrib(s.getAttribLocation(name), size, type, normalized);
-}
-
-void Buffer::setAttrib(ShaderProgram &&s, std::string name, GLenum type, bool normalized) const {
-    setAttrib(s, name, 1, type, normalized);
+    setAttrib(s, name, size, type, normalized);
 }
 
 void Buffer::setAttrib(ShaderProgram &&s, std::string name, int size, bool normalized) const {
     setAttrib(s, name, size, GL_FLOAT, normalized);
 }
 
-void Buffer::setAttrib(ShaderProgram &&s, std::string name, GLenum type) const {
-    setAttrib(s, name, 1, type, false);
-}
-
 void Buffer::setAttrib(ShaderProgram &&s, std::string name, int size) const {
     setAttrib(s, name, size, GL_FLOAT, false);
-}
-
-void Buffer::setAttrib(ShaderProgram &&s, std::string name) const {
-    setAttrib(s, name, 1, GL_FLOAT, false);
 }
 
 void Buffer::drawArrays() {
@@ -154,17 +150,21 @@ void Buffer::drawArrays(GLenum mode) {
 }
 
 void Buffer::drawElements() {
-	drawElements(GL_TRIANGLES, GL_UNSIGNED_INT);
+    drawElements(GL_TRIANGLES, GL_UNSIGNED_INT);
+}
+
+void Buffer::drawElements(GLenum mode) {
+    drawElements(mode, GL_UNSIGNED_INT);
 }
 
 void Buffer::drawElements(GLenum mode, GLenum type) {
-	this->bind(GL_ELEMENT_ARRAY_BUFFER);
-	glDrawElements(
-		mode,
-		this->size,
-		type,
-		(void*)0           // element array buffer offset
-	);
+    this->bind(GL_ELEMENT_ARRAY_BUFFER);
+    glDrawElements(
+        mode,
+        this->size,
+        type,
+        (void*)0           // element array buffer offset
+    );
 }
 
 void Buffer::drawInstanced(int count) {
@@ -186,14 +186,17 @@ void Buffer::drawInstanced(GLenum mode, int count, GLenum type) {
     );
 }
 
-
-Buffer::~Buffer() {
-	auto iterid = Buffer::refCount.find(this->id);
-    if(iterid != Buffer::refCount.end()) {
-        iterid->second = iterid->second - 1;
-        if(iterid->second == 0)
-            glDeleteBuffers(1, &this->id);
-    }
+IndexBuffer::IndexBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER) {
 }
+
+IndexBuffer::IndexBuffer(IndexBuffer const &b) : Buffer(b) {
+}
+
+IndexBuffer::IndexBuffer(std::vector<unsigned> const &data, GLenum usage) : Buffer(data, GL_ELEMENT_ARRAY_BUFFER, usage) {
+}
+
+IndexBuffer::IndexBuffer(std::vector<unsigned> const &data) : Buffer(data, GL_ELEMENT_ARRAY_BUFFER) {
+}
+
 
 std::map<GLuint, unsigned int> Buffer::refCount;
