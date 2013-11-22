@@ -15,7 +15,7 @@ class Buffer {
 		Buffer();
 		Buffer(GLenum target);
 		Buffer(Buffer const &b);
-		~Buffer();
+		virtual ~Buffer();
 		Buffer &operator=(Buffer const &b);
 		Buffer &operator=(Buffer &&b);
 		operator GLuint();
