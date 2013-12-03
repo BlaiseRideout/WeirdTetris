@@ -1,12 +1,11 @@
-#version 130
-in vec3 vertexPosition;
-in vec2 vertexUV;
+attribute vec3 vertexPosition;
+attribute vec2 vertexUV;
 
 uniform mat4 M;
 uniform mat4 V;
 uniform mat4 P;
 
-out vec2 tcoord;
+varying vec2 tcoord;
 
 void main(void) {
 	mat4 MVP = P * V * M;

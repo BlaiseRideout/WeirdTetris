@@ -6,7 +6,7 @@
 Text::Text() {
 }
 
-Text::Text(Text const &t) : p(t.p), str(t.str), x(t.x), y(t.y), vertices(t.vertices), uvs(t.uvs), vao(t.vao) {
+Text::Text(Text const &t) : p(t.p), str(t.str), x(t.x), y(t.y), vertices(t.vertices), uvs(t.uvs) {
 }
 
 Text::Text(ShaderProgram p, std::string str, float x, float y) : Text(p, str, x, y, 12.0f) {
@@ -22,7 +22,8 @@ void Text::setStr(std::string str) {
 }
 
 void Text::draw() {
-	this->vao.bind();
+	vertices.setAttrib(this->p, "vertexPosition",  3, GL_FLOAT, false);
+	uvs.setAttrib(this->p, "vertexUV", 2, GL_FLOAT, false);
 	this->vertices.drawArrays();
 }
 
@@ -84,10 +85,7 @@ void Text::genBuffers() {
 	}
 
 	vertices = Buffer(verts);
-	vao.setAttrib(this->p, "vertexPosition", vertices, 3, GL_FLOAT, false);
-
 	uvs = Buffer(temp_uvs);
-	vao.setAttrib(this->p, "vertexUV", uvs, 2, GL_FLOAT, false);
 }
 
 Text &Text::operator=(Text const &t) {
@@ -97,7 +95,6 @@ Text &Text::operator=(Text const &t) {
 	y = t.y;
 	vertices = t.vertices;
 	uvs = t.uvs;
-	vao = t.vao;
 
 	return *this;
 }

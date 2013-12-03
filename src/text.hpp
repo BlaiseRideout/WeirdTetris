@@ -28,7 +28,6 @@ class Text {
 		Texture t;
 		Buffer vertices;
 		Buffer uvs;
-		VAO vao;
 };
 
 #endif

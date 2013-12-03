@@ -29,7 +29,6 @@ class Tetris : public Game {
         Buffer vertices;
         Buffer positions;
         Buffer gridBuffer;
-        VAO vao;
 
         bool prevLeft, prevRight, prevUp, prevDown, prevSpace, prevShift, prevZ;
         bool moved, held;

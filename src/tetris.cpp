@@ -234,9 +234,12 @@ void Tetris::update(double time) {
   this->window.clearScreen();
 
   this->p.use();
-  this->vao.bind();
+  positions.setAttrib(this->p, "tilePosition", 2, GL_FLOAT, false, 1);
+  gridBuffer.setAttrib(this->p, "tileColor", 3, GL_FLOAT, false, 1);
+  vertices.setAttrib(this->p ,"vertexPosition", 3, GL_FLOAT, false);
+  uvs.setAttrib(this->p, "vertexUV", 2, GL_FLOAT, false);
+
   this->inds.drawInstanced(gridWidth * gridHeight + 16 * 2);
-  this->vao.unbind();
 
   this->text.use();
   scoreText.draw();
@@ -253,7 +256,7 @@ void Tetris::newGame() {
   choosePiece();
 }
 
-Tetris::Tetris() : Game("Weird Tetris", 3, 1), grid(gridWidth * gridHeight), ticks(defTicks), tick(ticks), score(0), losses(0) {
+Tetris::Tetris() : Game("Weird Tetris", 2, 0), grid(gridWidth * gridHeight), ticks(defTicks), tick(ticks), score(0), losses(0) {
   this->window.clearColor(glm::vec3(0.2f, 0.2f, 0.2f));
 
   FragmentShader f("res/texture.frag");
@@ -283,7 +286,6 @@ Tetris::Tetris() : Game("Weird Tetris", 3, 1), grid(gridWidth * gridHeight), tic
   verts.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
   verts.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
   vertices = Buffer(verts);
-  vao.setAttrib(this->p, "vertexPosition", vertices, 3, GL_FLOAT, false);
 
   std::vector<glm::vec2> temp_uvs;
   temp_uvs.push_back(glm::vec2(0, 1));
@@ -291,7 +293,6 @@ Tetris::Tetris() : Game("Weird Tetris", 3, 1), grid(gridWidth * gridHeight), tic
   temp_uvs.push_back(glm::vec2(1, 0));
   temp_uvs.push_back(glm::vec2(1, 1));
   uvs = Buffer(temp_uvs);
-  vao.setAttrib(this->p, "vertexUV", uvs, 2, GL_FLOAT, false);
 
   std::vector<unsigned> indices;
   indices.push_back(0);
@@ -317,8 +318,6 @@ Tetris::Tetris() : Game("Weird Tetris", 3, 1), grid(gridWidth * gridHeight), tic
       poss.push_back(glm::vec2(gridWidth + 1 + (float)x, (float)y));
 
   positions = Buffer(poss);
-  vao.setAttrib(this->p, "tilePosition", positions, 2, GL_FLOAT, false, 1);
-  this->vao.unbind();
 
   newGame();
 }
@@ -397,7 +396,6 @@ void Tetris::passGridBuffer() {
     gridColors[gridWidth * gridHeight + 16 + i] = pieceColors[n[i]];
 
   gridBuffer.loadData(gridColors, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
-  vao.setAttrib(this->p, "tileColor", gridBuffer, 3, GL_FLOAT, false, 1);
 
   std::stringstream scoreStream;
   scoreStream << "Score - ";
