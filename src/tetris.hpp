@@ -38,7 +38,7 @@ class Tetris : public Game {
 
         std::vector<int> grid;
 
-        const static int defTicks = 60;
+        const static int defTicks = 10;
         int ticks;
         int tick;
 
